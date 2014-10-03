@@ -1,0 +1,106 @@
+import java.awt.*;
+import java.util.Calendar;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Calendar;
+import java.awt.Font;
+
+public class Clock
+  extends java.applet.Applet implements Runnable {
+
+  protected Thread clockThread = null;
+ 
+  protected Color color = Color.blue;
+  private int Clock_style= Calendar.LONG;
+  
+  public static Object BOLD;
+  
+	private int currentColor = 1; 
+	
+
+  public void start() {
+    if (clockThread == null) {
+      clockThread = new Thread(this);
+      clockThread.start();
+    }
+  }
+
+  public void stop() {
+    clockThread = null;
+  }
+
+  public void run() {
+    while (Thread.currentThread()  ==  clockThread) {
+      repaint();
+      try {
+	Thread.currentThread().sleep(1000);
+      } catch (InterruptedException e) {}
+    }
+  }
+
+  public void paint(Graphics g) {
+	  g.setFont(new Font("sans_serif", Font.BOLD, 24));
+		g.setColor(new Color (255,215,0));//gold color
+	  g.drawString("Please click anywhere to change the font color and style !", 40, 25);
+	  Calendar calendar = Calendar.getInstance();
+	  
+      String day_of_week= calendar.getDisplayName(Calendar.DAY_OF_WEEK, Clock_style, getLocale());
+	  String month = calendar.getDisplayName(Calendar.MONTH, Clock_style, getLocale());
+	  int day = calendar.get(Calendar.DAY_OF_MONTH);
+	  int year =calendar.get(Calendar.YEAR);
+	  
+	  DateFormat dateFormat = new SimpleDateFormat();
+	 
+	  String time = dateFormat.format(calendar.getTime()); 
+	
+	 
+
+
+	  switch (currentColor) { 
+      case 0:
+    	  
+         g.setColor(Color.black); 
+         g.setFont(getFont().deriveFont(Font.ROMAN_BASELINE, 48));
+         break; 
+      case 1:
+         g.setColor(Color.red);
+         g.setFont(getFont().deriveFont(Font.ITALIC, 48));
+         break;
+      case 2:
+         g.setColor(Color.blue);
+         g.setFont(getFont().deriveFont(Font.LAYOUT_RIGHT_TO_LEFT,48));
+         break;
+      case 3:
+         g.setColor(Color.green);
+         g.setFont(getFont().deriveFont(Font.CENTER_BASELINE,48));
+         break;
+     
+  } 
+	  
+	  
+	  
+	 
+     
+      g.drawString(time.toString(),15, 150); 
+      
+     
+    
+      g.drawString( day +" "+month+" "+year+" "+day_of_week , 20, 200);
+     
+     
+  
+      
+  
+
+  }
+  public boolean mouseDown(Event evt, int x, int y) {
+      currentColor++;    
+      if (currentColor > 3)
+         currentColor = 0;
+      repaint();        
+      return true;
+  
+   }
+}
+      
